@@ -136,7 +136,7 @@ fun OnboardingScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "MediCare",
+                    text = "MedCare",
                     fontSize = 34.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary

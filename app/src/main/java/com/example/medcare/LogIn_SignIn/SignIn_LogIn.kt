@@ -1,5 +1,6 @@
 package com.example.medcare.login_signup
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -22,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,9 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun AuthScreen(navController: NavHostController) {
+
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
 
     var isLogin by remember { mutableStateOf(true) }
 
@@ -44,8 +49,12 @@ fun AuthScreen(navController: NavHostController) {
     var password by remember { mutableStateOf("") }
 
     val selectedColor by animateColorAsState(
-        if (isLogin) MaterialTheme.colorScheme.primary
-        else Color(0xFF00A86B),
+        targetValue =
+            if (isLogin)
+                MaterialTheme.colorScheme.primary
+            else
+                Color(0xFF00A86B),
+
         label = ""
     )
 
@@ -68,21 +77,25 @@ fun AuthScreen(navController: NavHostController) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp),
+
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             Spacer(modifier = Modifier.height(60.dp))
 
-            // LOGO SECTION
+            // LOGO
+
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = CircleShape,
                 shadowElevation = 12.dp,
                 color = selectedColor
             ) {
+
                 Box(
                     contentAlignment = Alignment.Center
                 ) {
+
                     Icon(
                         imageVector = Icons.Default.HealthAndSafety,
                         contentDescription = null,
@@ -104,10 +117,12 @@ fun AuthScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = if (isLogin)
-                    "Welcome back to your health companion"
-                else
-                    "Create your health account today",
+                text =
+                    if (isLogin)
+                        "Welcome back to your health companion"
+                    else
+                        "Create your health account today",
+
                 fontSize = 16.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
@@ -116,6 +131,7 @@ fun AuthScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(40.dp))
 
             // LOGIN / SIGNUP SWITCH
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,6 +158,7 @@ fun AuthScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(35.dp))
 
             // FORM CARD
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(28.dp),
@@ -163,6 +180,8 @@ fun AuthScreen(navController: NavHostController) {
                     ) { loginMode ->
 
                         Column {
+
+                            // SIGNUP FIELDS
 
                             if (!loginMode) {
 
@@ -188,6 +207,8 @@ fun AuthScreen(navController: NavHostController) {
                                 Spacer(modifier = Modifier.height(18.dp))
                             }
 
+                            // EMAIL
+
                             AuthTextField(
                                 value = email,
                                 onValueChange = { email = it },
@@ -199,20 +220,32 @@ fun AuthScreen(navController: NavHostController) {
 
                             Spacer(modifier = Modifier.height(18.dp))
 
+                            // PASSWORD
+
                             OutlinedTextField(
                                 value = password,
                                 onValueChange = { password = it },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(18.dp),
-                                label = { Text("Password") },
-                                placeholder = { Text("Enter password") },
+
+                                label = {
+                                    Text("Password")
+                                },
+
+                                placeholder = {
+                                    Text("Enter password")
+                                },
+
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Default.Lock,
                                         contentDescription = null
                                     )
                                 },
-                                visualTransformation = PasswordVisualTransformation(),
+
+                                visualTransformation =
+                                    PasswordVisualTransformation(),
+
                                 singleLine = true
                             )
 
@@ -225,6 +258,7 @@ fun AuthScreen(navController: NavHostController) {
                                     modifier = Modifier
                                         .align(Alignment.End)
                                         .clickable { },
+
                                     color = selectedColor,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -233,29 +267,116 @@ fun AuthScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.height(32.dp))
 
                             // MAIN BUTTON
+
                             Button(
+
                                 onClick = {
 
-                                    navController.navigate("home") {
-                                        popUpTo("onboarding") {
-                                            inclusive = true
+                                    // VALIDATION
+
+                                    if (email.isEmpty() || password.isEmpty()) {
+
+                                        Toast.makeText(
+                                            context,
+                                            "Please fill all fields",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        return@Button
+                                    }
+
+                                    // LOGIN
+
+                                    if (loginMode) {
+
+                                        auth.signInWithEmailAndPassword(
+                                            email,
+                                            password
+                                        ).addOnCompleteListener { task ->
+
+                                            if (task.isSuccessful) {
+
+                                                Toast.makeText(
+                                                    context,
+                                                    "Login Successful",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                                navController.navigate("home") {
+
+                                                    popUpTo("auth") {
+                                                        inclusive = true
+                                                    }
+                                                }
+
+                                            } else {
+
+                                                Toast.makeText(
+                                                    context,
+                                                    task.exception?.message
+                                                        ?: "Login Failed",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
+                                        }
+
+                                    }
+
+                                    // SIGNUP
+
+                                    else {
+
+                                        auth.createUserWithEmailAndPassword(
+                                            email,
+                                            password
+                                        ).addOnCompleteListener { task ->
+
+                                            if (task.isSuccessful) {
+
+                                                Toast.makeText(
+                                                    context,
+                                                    "Account Created Successfully",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                                navController.navigate("home") {
+
+                                                    popUpTo("auth") {
+                                                        inclusive = true
+                                                    }
+                                                }
+
+                                            } else {
+
+                                                Toast.makeText(
+                                                    context,
+                                                    task.exception?.message
+                                                        ?: "Signup Failed",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            }
                                         }
                                     }
                                 },
+
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(58.dp),
+
                                 shape = RoundedCornerShape(18.dp),
+
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = selectedColor
                                 )
                             ) {
 
                                 Text(
-                                    text = if (loginMode)
-                                        "Sign In"
-                                    else
-                                        "Create Account",
+                                    text =
+                                        if (loginMode)
+                                            "Sign In"
+                                        else
+                                            "Create Account",
+
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -264,11 +385,31 @@ fun AuthScreen(navController: NavHostController) {
                             Spacer(modifier = Modifier.height(18.dp))
 
                             // GOOGLE BUTTON
+
                             OutlinedButton(
-                                onClick = { },
+
+                                onClick = {
+
+                                    Toast.makeText(
+                                        context,
+                                        "Google Login Coming Soon",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                    // TEMPORARY NAVIGATION
+
+                                    navController.navigate("home") {
+
+                                        popUpTo("auth") {
+                                            inclusive = true
+                                        }
+                                    }
+                                },
+
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(58.dp),
+
                                 shape = RoundedCornerShape(18.dp)
                             ) {
 
@@ -285,7 +426,6 @@ fun AuthScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            // FOOTER
             Text(
                 text = "Secure • Trusted • Smart Healthcare",
                 color = Color.Gray,
@@ -320,12 +460,17 @@ fun AuthSwitchButton(
             )
             .clickable { onClick() }
             .padding(vertical = 14.dp),
+
         contentAlignment = Alignment.Center
     ) {
 
         Text(
             text = text,
-            color = if (selected) Color.White else Color.Gray,
+            color = if (selected)
+                Color.White
+            else
+                Color.Black,
+
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp
         )
@@ -349,23 +494,32 @@ fun AuthTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
+
         modifier = Modifier.fillMaxWidth(),
+
         shape = RoundedCornerShape(18.dp),
+
         label = {
             Text(label)
         },
+
         placeholder = {
             Text(placeholder)
         },
+
         leadingIcon = {
+
             Icon(
                 imageVector = icon,
                 contentDescription = null
             )
         },
-        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
-            keyboardType = keyboardType
-        ),
+
+        keyboardOptions =
+            androidx.compose.foundation.text.KeyboardOptions(
+                keyboardType = keyboardType
+            ),
+
         singleLine = true
     )
 }

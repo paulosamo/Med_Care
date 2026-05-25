@@ -26,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
-// ===================== DATA =====================
-
 data class PersonalInfo(
     val name: String,
     val age: String,
@@ -58,7 +56,7 @@ val personalInfo = PersonalInfo(
     "24",
     "O+",
     "+254 700 123 456",
-    "Jane Osamo"
+    "Ester Osamo"
 )
 
 val reports = listOf(
@@ -72,7 +70,7 @@ val vaccines = listOf(
 )
 
 val visits = listOf(
-    Visit("Dr. Sarah Chen", "Routine Checkup", "12 May 2026"),
+    Visit("Dr. Innocent Mose", "Routine Checkup", "12 May 2026"),
     Visit("Dr. James Mwangi", "Headache", "5 April 2026")
 )
 

@@ -22,7 +22,6 @@ class newone : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
             MedCareTheme {
 
                 Surface(

@@ -1,4 +1,5 @@
 package com.example.medcare.Home_Screen
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,33 +26,108 @@ import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController? = null) {
+fun HomeScreen(
+    navController: NavHostController? = null
+) {
 
     val tips = listOf(
-        Triple("Stay Hydrated", "Drink more water daily", Icons.Default.WaterDrop),
-        Triple("Exercise", "Walk 30 mins everyday", Icons.Default.DirectionsWalk),
-        Triple("Healthy Food", "Eat fruits & vegetables", Icons.Default.Restaurant)
+
+        Triple(
+            "Stay Hydrated",
+            "Drink more water daily",
+            Icons.Default.WaterDrop
+        ),
+
+        Triple(
+            "Exercise",
+            "Walk 30 mins everyday",
+            Icons.Default.DirectionsWalk
+        ),
+
+        Triple(
+            "Healthy Food",
+            "Eat fruits & vegetables",
+            Icons.Default.Restaurant
+        )
     )
 
     Scaffold(
+
         topBar = {
+
             TopAppBar(
+
                 title = {
-                    Text("MediCare", fontWeight = FontWeight.Bold)
+
+                    Text(
+                        "MedCare",
+                        fontWeight = FontWeight.Bold
+                    )
                 },
+
                 actions = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Notifications, null)
+
+                    IconButton(
+
+                        onClick = {
+
+                            navController?.navigate("health_profile")
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Notifications,
+                            contentDescription = null
+                        )
                     }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Person, null)
+
+                    IconButton(
+
+                        onClick = {
+
+                            navController?.navigate("profile")
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null
+                        )
+                    }
+
+                    IconButton(
+
+                        onClick = {
+                            navController?.navigate("setting")
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null
+                        )
+                    }
+                    IconButton(
+
+                        onClick = {
+
+                            navController?.navigate("payment")
+                        }
+                    ) {
+
+                        Icon(
+                            Icons.Default.Payment,
+                            contentDescription = null
+                        )
                     }
                 }
             )
         }
+
     ) { padding ->
 
         Column(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
@@ -58,7 +135,6 @@ fun HomeScreen(navController: NavHostController? = null) {
                 .verticalScroll(rememberScrollState())
         ) {
 
-            // Greeting
             Text(
                 "Hello Paul 👋",
                 fontSize = 28.sp,
@@ -72,23 +148,43 @@ fun HomeScreen(navController: NavHostController? = null) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Appointment Card
+            // APPOINTMENT CARD
+
             Card(
+
                 modifier = Modifier.fillMaxWidth(),
+
                 shape = RoundedCornerShape(24.dp),
+
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor =
+                        MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                Column(modifier = Modifier.padding(20.dp)) {
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CalendarMonth, null)
-                        Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Icon(
+                            Icons.Default.CalendarMonth,
+                            null
+                        )
+
+                        Spacer(
+                            modifier = Modifier.width(8.dp)
+                        )
+
                         Text("Next Appointment")
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(
+                        modifier = Modifier.height(10.dp)
+                    )
 
                     Text(
                         "Dr. Innocent Mose",
@@ -97,14 +193,23 @@ fun HomeScreen(navController: NavHostController? = null) {
                     )
 
                     Text("Tomorrow • 10:30 AM")
+
                     Text("The Nairobi Hospital")
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
 
                     Button(
-                        onClick = {},
+
+                        onClick = {
+
+                            navController?.navigate("appointment")
+                        },
+
                         modifier = Modifier.fillMaxWidth()
                     ) {
+
                         Text("View Details")
                     }
                 }
@@ -112,54 +217,112 @@ fun HomeScreen(navController: NavHostController? = null) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Quick Actions
+            // QUICK ACTIONS
+
             Text(
                 "Quick Actions",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(
+                modifier = Modifier.height(14.dp)
+            )
 
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+
+                horizontalArrangement =
+                    Arrangement.SpaceBetween,
+
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                ActionItem(Icons.Default.Add, "Book", Color(0xFF2196F3))
-                ActionItem(Icons.Default.Description, "Records", Color(0xFF4CAF50))
-                ActionItem(Icons.Default.Medication, "Medicine", Color(0xFFFF9800))
-                ActionItem(Icons.Default.Call, "Emergency", Color(0xFFE53935))
+                ActionItem(
+                    icon = Icons.Default.Add,
+                    title = "Book",
+                    color = Color(0xFF2196F3),
+                    onClick = {
+                        navController?.navigate("appointment")
+                    }
+                )
+
+                ActionItem(
+                    icon = Icons.Default.Description,
+                    title = "Records",
+                    color = Color(0xFF4CAF50),
+                    onClick = {
+                        navController?.navigate("records")
+                    }
+                )
+
+                ActionItem(
+                    icon = Icons.Default.Medication,
+                    title = "Medicine",
+                    color = Color(0xFFFF9800),
+                    onClick = {
+                        navController?.navigate("medicine")
+                    }
+                )
+
+                ActionItem(
+                    icon = Icons.Default.Call,
+                    title = "Emergency",
+                    color = Color(0xFFE53935),
+                    onClick = {
+                        navController?.navigate("emergency")
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Health Stats
+            // HEALTH STATS
+
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement =
+                    Arrangement.spacedBy(12.dp)
             ) {
 
-                StatCard("Heart Rate", "78 bpm")
-                StatCard("Blood Group", "O+")
+                StatCard(
+                    "Heart Rate",
+                    "78 bpm"
+                )
+
+                StatCard(
+                    "Blood Group",
+                    "O+"
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Tips
+            // HEALTH TIPS
+
             Text(
                 "Health Tips",
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
 
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            LazyRow(
+
+                horizontalArrangement =
+                    Arrangement.spacedBy(12.dp)
+            ) {
 
                 items(tips) { tip ->
 
                     Card(
-                        modifier = Modifier.size(width = 220.dp, height = 130.dp),
+
+                        modifier = Modifier.size(
+                            width = 220.dp,
+                            height = 130.dp
+                        ),
+
                         shape = RoundedCornerShape(20.dp)
                     ) {
 
@@ -170,10 +333,14 @@ fun HomeScreen(navController: NavHostController? = null) {
                             Icon(
                                 tip.third,
                                 null,
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = MaterialTheme
+                                    .colorScheme
+                                    .primary
                             )
 
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(
+                                modifier = Modifier.height(10.dp)
+                            )
 
                             Text(
                                 tip.first,
@@ -198,12 +365,15 @@ fun HomeScreen(navController: NavHostController? = null) {
 fun ActionItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
-    color: Color
+    color: Color,
+    onClick: () -> Unit
 ) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { }
+        modifier = Modifier.clickable {
+            onClick()
+        }
     ) {
 
         Box(
@@ -216,7 +386,7 @@ fun ActionItem(
 
             Icon(
                 icon,
-                null,
+                contentDescription = null,
                 tint = color,
                 modifier = Modifier.size(30.dp)
             )
@@ -233,12 +403,17 @@ fun ActionItem(
 }
 
 @Composable
-fun StatCard(title: String, value: String) {
+fun StatCard(
+    title: String,
+    value: String
+) {
 
     Card(
+
         modifier = Modifier
             .width(170.dp)
             .height(100.dp),
+
         shape = RoundedCornerShape(18.dp)
     ) {
 
@@ -251,7 +426,9 @@ fun StatCard(title: String, value: String) {
                 color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
 
             Text(
                 value,
@@ -265,7 +442,9 @@ fun StatCard(title: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
+
     MaterialTheme {
+
         HomeScreen()
     }
 }
